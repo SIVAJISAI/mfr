@@ -1,23 +1,28 @@
-// ### **1. Festival Ribbon Count**
+const heading = (text) => console.log("-".repeat(20) + text + "-".repeat(20));
 
-// A craft booth cuts ribbons of different colors throughout the day:
+const shorten = (data, method, initialValue) => data.reduce(method, initialValue);
 
-// ```
-// ["red", "blue", "red", "green", "red", "blue"]
-// ```
+const isBlueRibbon = (count, currentRibbon) => currentRibbon.toLowerCase() === "blue" ? count + 1 : count;
 
-// They want to know how many **blue** ribbons were cut.
+const blueRibbons = (data) => shorten(data, isBlueRibbon, 0);
 
-const countRibbons = (count, currentRibbon) => {
-  if (currentRibbon === "blue" || currentRibbon === "BLUE") {
-    return count + 1;
-  }
-  return count;
-}
+const filter = (data, method) => data.filter(method);
 
-const reduce = (data, method) => {
-  return data.reduce(method, 0);
-}
+const uniqueConstellations = (data) => filter(data.flat(), isUnique);
+
+const isUnique = (element, index, array) => array.indexOf(element) === index;
+
+// const uniqueBirds = (data) => filter(data, isUnique);
+
+const uniqueBirds = (data) => {
+  return data.reduce((accumalator, bird) => {
+    if (!accumalator.includes(bird)) {
+      accumalator.push(bird);
+    }
+    return accumalator;
+  }, []);
+};
+
 
 const areArraysEqual = function (array1, array2) {
   if (array1.length !== array2.length) {
@@ -55,18 +60,38 @@ const formatText = function (description, numbers, actualResult, expectedOutput)
   return status + message + inputFragment + expectFragment + actualFragment;
 }
 
-const testResults = function (type, method, description, data, expectedOutput) {
-  const actualResult = type(data, method);
+const testResults = function (type, description, data, expectedOutput) {
+  const actualResult = type(data);
   console.log(formatText(description, data, actualResult, expectedOutput));
 }
-
-const testRibbons = function () {
-  testResults(reduce, countRibbons, "blue ribbons count is 3", ["red", "blue", "blue", "green", "blue", "blue"], 4)
-  testResults(reduce, countRibbons, "there are no blue ribbons", ["green", "yellow", "red"], 0);
-  testResults(reduce, countRibbons, "ribbon is in UPPERCASE", ["BLUE", "blue", "blue", "blue"], 4);
-  testResults(reduce, countRibbons, "empty list", [], 0);
+const testAttenddance = () => {
+  heading("BLUE RIBBONS");
+  testResults(attendance, "at least once", [["Asha", "Ravi", "Neel"],["Ravi"],["Asha", "Meera"]], ["Asha","Ravi","Neel","Meera"])
 }
+const testRibbons = () => {
+  heading("BLUE RIBBONS");
+  testResults(blueRibbons, "blue ribbons count is 3", ["red", "blue", "blue", "green", "blue", "blue"], 4)
+  testResults(blueRibbons, "there are no blue ribbons", ["green", "yellow", "red"], 0);
+  testResults(blueRibbons, "ribbon is in UPPERCASE", ["BLUE", "blue", "blue", "blue"], 4);
+  testResults(blueRibbons, "empty list", [], 0);
+}
+
+const testUniqueConstellations = () => {
+  heading("UNIQUE CONSTELLATIONS");
+  testResults(uniqueConstellations, "unique constellations", [["orion", "tautarus"], ["orion", "leo", "gemini"]], ["orion", "tautarus", "leo", "gemini"]);
+  testResults(uniqueConstellations, "same constellation on sasme night", [["orion", "tautarus", "orion"], ["orion", "leo", "gemini"]], ["orion", "tautarus", "leo", "gemini"]);
+
+}
+const testUniqueBirds = () => {
+  heading("UNIQUE BIRDS");
+  testResults(uniqueBirds, "unique birds", ["sparrow", "crow", "sparrow", "eagle", "crow"], ["sparrow", "crow", "eagle"]);
+  testResults(uniqueBirds, "empty list", [], []);
+}
+
 const testAll = function () {
   testRibbons();
+  testUniqueConstellations();
+  testUniqueBirds();
+
 }
 testAll();

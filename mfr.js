@@ -18,6 +18,8 @@ const attendance = students => students.flat().reduce(isUnique, []);
 
 const candiescount = candies => candies.flat().reduce((count, candy) => candy + count, 0);
 
+const musicalNote = groupsNotes => groupsNotes.some((hasDo) => hasDo.includes("do"));
+
 const areArraysEqual = (array1, array2) => {
   if (array1.length !== array2.length) {
     return false;
@@ -58,14 +60,20 @@ const testResults = (type, description, data, expectedOutput) => {
   console.log(formatText(description, data, actualResult, expectedOutput));
 }
 
+const testMusicalNotes = () => {
+  heading("MUSICAL NOTES");
+  testResults(musicalNote, "one group has DO note", [["mi", "fa", "so"], ["do", "mi"], ["fa"]], true);
+  testResults(musicalNote, "no group has DO note", [["mi", "fa", "so"], ["pa", "mi"], ["fa"]], false);
+  testResults(musicalNote, "groups didn't sang any note", [[], [], []], false);
+}
 const testCandiesCount = () => {
   heading("CANDIES COUNT");
-  testResults(candiescount, "total cnadies is 15", [[5, 3], [2], [4, 1]], 15);
+  testResults(candiescount, "total candies is 15", [[5, 3], [2], [4, 1]], 15);
   testResults(candiescount, "one day candies are not refilled", [[5, 3], [], [4, 9]], 21);
   testResults(candiescount, "no candies are refilled", [[], [], [], []], 0);
 
 }
-const testAttenddanceAtLeastOnce = () => {
+const testAttendanceAtLeastOnce = () => {
   heading("ATTENDANCE");
   testResults(attendance, "some students attended multiple times", [["Ravi", "Asha"], ["Asha", "Ravi"], ["Meera"]],
     ["Ravi", "Asha", "Meera"]);
@@ -115,7 +123,8 @@ const testAll = function () {
   testRibbons();
   testUniqueConstellations();
   testUniqueBirds();
-  testAttenddanceAtLeastOnce();
+  testAttendanceAtLeastOnce();
   testCandiesCount();
+  testMusicalNotes();
 }
 testAll();

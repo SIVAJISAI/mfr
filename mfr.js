@@ -1,22 +1,22 @@
-const heading = (text) => console.log("-".repeat(20) + text + "-".repeat(20));
+const heading = text => console.log("-".repeat(20) + text + "-".repeat(20));
 
-const blueRibbons = (data) => data.reduce((count, currentRibbon) =>
+const blueRibbons = ribbons => ribbons.reduce((count, currentRibbon) =>
   currentRibbon.toLowerCase() === "blue" ? count + 1 : count, 0);
 
-const uniqueConstellations = (data) => data.flat().reduce(isUnique, []);
+const uniqueConstellations = constellations => constellations.flat().reduce(isUnique, []);
 
-const uniqueBirds = (data) => data.reduce(isUnique, []);
+const uniqueBirds = allBirds => allBirds.reduce(isUnique, []);
 
-const isUnique = (combinedList, item) => {
-  if (!combinedList.includes(item)) {
-    combinedList.push(item);
+const isUnique = (uniqueItems, item) => {
+  if (!uniqueItems.includes(item)) {
+    uniqueItems.push(item);
   }
-  return combinedList;
+  return uniqueItems;
 }
 
-const attendance = (data) => data.flat().reduce(isUnique, []);
+const attendance = students => students.flat().reduce(isUnique, []);
 
-const candiescount = (data) => data.flat().reduce((count, currentCandyCount) => currentCandyCount + count, 0);
+const candiescount = candies => candies.flat().reduce((count, candy) => candy + count, 0);
 
 const areArraysEqual = (array1, array2) => {
   if (array1.length !== array2.length) {
@@ -43,11 +43,11 @@ const areDeepEqual = (array1, array2) => {
   return array1 === array2;
 }
 
-const formatText = (description, numbers, actualResult, expectedOutput) => {
+const formatText = (description, input, actualResult, expectedOutput) => {
   const isPass = areDeepEqual(actualResult, expectedOutput);
   const status = isPass ? "✅" : "❌";
   const message = "  " + description;
-  const inputFragment = !isPass ? "\n\n\tinput  :  | " + numbers : "";
+  const inputFragment = !isPass ? "\n\n\tinput  :  | " + input : "";
   const expectFragment = !isPass ? "\n\texpect :  | " + expectedOutput : "";
   const actualFragment = !isPass ? "\n\tactual :  | " + actualResult + "\n\t" : "";
   return status + message + inputFragment + expectFragment + actualFragment;
@@ -79,7 +79,7 @@ const testAttenddanceAtLeastOnce = () => {
 
 const testRibbons = () => {
   heading("BLUE RIBBONS");
-  testResults(blueRibbons, "blue ribbons count is 3", ["red", "blue", "blue", "green", "blue", "blue"], 4);
+  testResults(blueRibbons, "blue ribbons count is 4", ["red", "blue", "blue", "green", "blue", "blue"], 4);
   testResults(blueRibbons, "there are no blue ribbons", ["green", "yellow", "red"], 0);
   testResults(blueRibbons, "ribbon is in UPPERCASE", ["BLUE", "blue", "blue", "blue"], 4);
   testResults(blueRibbons, "no openings are done", [], 0);
@@ -119,14 +119,3 @@ const testAll = function () {
   testCandiesCount();
 }
 testAll();
-// ### **5. Candy Jar Stocking**
-
-// A store logs candy refills like this:
-
-// ```
-// [5, 3]
-// [2]
-// [4, 1]
-// ```
-
-// Find the total number of candies added.

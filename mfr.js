@@ -7,16 +7,18 @@ const uniqueConstellations = (data) => data.flat().reduce(isUnique, []);
 
 const uniqueBirds = (data) => data.reduce(isUnique, []);
 
-const isUnique = (accumalator, item) => {
-  if (!accumalator.includes(item)) {
-    accumalator.push(item);
+const isUnique = (combinedList, item) => {
+  if (!combinedList.includes(item)) {
+    combinedList.push(item);
   }
-  return accumalator;
+  return combinedList;
 }
 
 const attendance = (data) => data.flat().reduce(isUnique, []);
 
-const areArraysEqual = function (array1, array2) {
+const candiescount = (data) => data.flat().reduce((count, currentCandyCount) => currentCandyCount + count, 0);
+
+const areArraysEqual = (array1, array2) => {
   if (array1.length !== array2.length) {
     return false;
   }
@@ -29,7 +31,7 @@ const areArraysEqual = function (array1, array2) {
   return true;
 }
 
-const areDeepEqual = function (array1, array2) {
+const areDeepEqual = (array1, array2) => {
   if (typeof array1 !== typeof array2) {
     return false;
   }
@@ -41,7 +43,7 @@ const areDeepEqual = function (array1, array2) {
   return array1 === array2;
 }
 
-const formatText = function (description, numbers, actualResult, expectedOutput) {
+const formatText = (description, numbers, actualResult, expectedOutput) => {
   const isPass = areDeepEqual(actualResult, expectedOutput);
   const status = isPass ? "✅" : "❌";
   const message = "  " + description;
@@ -51,15 +53,28 @@ const formatText = function (description, numbers, actualResult, expectedOutput)
   return status + message + inputFragment + expectFragment + actualFragment;
 }
 
-const testResults = function (type, description, data, expectedOutput) {
+const testResults = (type, description, data, expectedOutput) => {
   const actualResult = type(data);
   console.log(formatText(description, data, actualResult, expectedOutput));
 }
 
-const testAttenddance = () => {
-  heading("BLUE RIBBONS");
-  testResults(attendance, "student attended at least once", [["Asha", "Ravi", "Neel"], ["Ravi"], ["Asha", "Meera"]], ["Asha", "Ravi", "Neel", "Meera"]);
-  testResults(attendance, "empty list", [], []);
+const testCandiesCount = () => {
+  heading("CANDIES COUNT");
+  testResults(candiescount, "total cnadies is 15", [[5, 3], [2], [4, 1]], 15);
+  testResults(candiescount, "one day candies are not refilled", [[5, 3], [], [4, 9]], 21);
+  testResults(candiescount, "no candies are refilled", [[], [], [], []], 0);
+
+}
+const testAttenddanceAtLeastOnce = () => {
+  heading("ATTENDANCE");
+  testResults(attendance, "some students attended multiple times", [["Ravi", "Asha"], ["Asha", "Ravi"], ["Meera"]],
+    ["Ravi", "Asha", "Meera"]);
+  testResults(attendance, "no students at all in class", [], []);
+  testResults(attendance, "nested empty arrays", [[], []], []);
+  testResults(attendance, "names in upper and lower cases", [["Ravi", "ravi"], ["RAVI"]],
+    ["Ravi", "ravi", "RAVI"]);
+  testResults(attendance, "students with extra spaces", [["Ravi ", "Asha"], [" Ravi", "Asha"]],
+    ["Ravi ", "Asha", " Ravi"]);
 }
 
 const testRibbons = () => {
@@ -67,26 +82,51 @@ const testRibbons = () => {
   testResults(blueRibbons, "blue ribbons count is 3", ["red", "blue", "blue", "green", "blue", "blue"], 4);
   testResults(blueRibbons, "there are no blue ribbons", ["green", "yellow", "red"], 0);
   testResults(blueRibbons, "ribbon is in UPPERCASE", ["BLUE", "blue", "blue", "blue"], 4);
-  testResults(blueRibbons, "empty list", [], 0);
+  testResults(blueRibbons, "no openings are done", [], 0);
 }
 
 const testUniqueConstellations = () => {
   heading("UNIQUE CONSTELLATIONS");
-  testResults(uniqueConstellations, "unique constellations", [["orion", "tautarus"], ["orion", "leo", "gemini"]], ["orion", "tautarus", "leo", "gemini"]);
-  testResults(uniqueConstellations, "same constellation on same night", [["orion", "tautarus", "orion"], ["orion", "leo", "gemini"]], ["orion", "tautarus", "leo", "gemini"]);
+  testResults(uniqueConstellations, "repeated constellations", [["orion", "orion", "taurus"], ["taurus", "orion"]],
+    ["orion", "taurus"]);
+  testResults(uniqueConstellations, "empty inner arrays", [[], [], []], []);
+  testResults(uniqueConstellations, "single night observation",
+    [["gemini", "leo", "leo"]], ["gemini", "leo"]);
+  testResults(uniqueConstellations, "constellation in upper and lower cases",
+    [["Orion"], ["orion"]], ["Orion", "orion"]);
+  testResults(uniqueConstellations, "too many constellations",
+    [["orion", "leo"], ["gemini", "leo"], ["orion", "virgo"]], ["orion", "leo", "gemini", "virgo"]);
+  testResults(uniqueConstellations, "unique constellations", [["orion", "tautarus"], ["orion", "leo", "gemini"]],
+    ["orion", "tautarus", "leo", "gemini"]);
 }
 
 const testUniqueBirds = () => {
   heading("UNIQUE BIRDS");
-  testResults(uniqueBirds, "unique birds", ["sparrow", "crow", "sparrow", "eagle", "crow"], ["sparrow", "crow", "eagle"]);
-  testResults(uniqueBirds, "empty list", [], []);
+  testResults(uniqueBirds, "repeated birds with mixed case", ["Crow", "crow", "CROW", "eagle"],
+    ["Crow", "crow", "CROW", "eagle"]);
+  testResults(uniqueBirds, "all unique birds", ["peacock", "pigeon", "eagle"],
+    ["peacock", "pigeon", "eagle"]);
+  testResults(uniqueBirds, "empty list of birds", [], []);
+  testResults(uniqueBirds, "bird names with spaces", [" sparrow", "sparrow", "sparrow "],
+    [" sparrow", "sparrow", "sparrow "]);
 }
 
 const testAll = function () {
   testRibbons();
   testUniqueConstellations();
   testUniqueBirds();
-  testAttenddance();
-
+  testAttenddanceAtLeastOnce();
+  testCandiesCount();
 }
 testAll();
+// ### **5. Candy Jar Stocking**
+
+// A store logs candy refills like this:
+
+// ```
+// [5, 3]
+// [2]
+// [4, 1]
+// ```
+
+// Find the total number of candies added.
